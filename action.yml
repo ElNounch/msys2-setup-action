@@ -1,0 +1,74 @@
+name: "Msys2"
+description: "Prepare Msys2"
+inputs:
+  location:
+    description: "MSys2 location"
+    required: true
+  install:
+    description: "Extra packages to setup"
+    default: ""
+  msystem:
+    description: "Variant of the environment to set by default: MSYS, MINGW32, MINGW64, UCRT64, CLANG32, CLANG64 or CLANGARM64"
+    default: "UCRT64"
+  update:
+    description: "Shall we ?"
+    default: "true"
+outputs:
+  pkgTarget:
+    description: ""
+    value: "${{ steps.pktListHash.pkgTarget }}"
+  msys2_shell_cmd:
+    description: "full shell executable path"
+    value: ${{ steps.locate.outputs.msys2_shell_cmd }}
+  msys2_shell_args:
+    description: "shell executable required arguments"
+    value: ${{ steps.locate.outputs.msys2_shell_args }}
+runs:
+  using: composite
+  steps:
+    - name: "Compute outputs"
+      id: locate
+      shell: pwsh
+      run: |
+        switch( "${{ inputs.msystem }}" ) {
+          'MSYS' { $shellType = '-msys2' }
+          'MINGW32' { $shellType = '-mingw32' }
+          'MINGW64' { $shellType = '-mingw64' }
+          'UCRT64' { $shellType = '-ucrt64' }
+          'CLANG32' { $shellType = '-clang32' }
+          'CLANG64' { $shellType = '-clang64' }
+          'CLANGARM64' { $shellType = '-clangarm64???' }
+        }
+        $cmd = "${{ inputs.location }}\msys64\msys2_shell.cmd"
+        $args = "'-no-start','-defterm','$shellType','-shell','bash','-here'"
+
+        "msys2_shell_cmd=$cmd" >> $env:GITHUB_OUTPUT
+        "msys2_shell_args=$args" >> $env:GITHUB_OUTPUT
+    - name: "Compute hash of required packages names"
+      id: pktListHash
+      shell: pwsh
+      run: |
+        "pkgTarget=$((Get-FileHash -Algorithm SHA1 -InputStream $([IO.MemoryStream]::new([byte[]][char[]]"${{ inputs.install }}"))).Hash)" >> $env:GITHUB_OUTPUT
+    - name: "Download self-extracting archive"
+      shell: pwsh
+      run: |
+        Start-BitsTransfer "https://repo.msys2.org/distrib/msys2-x86_64-latest.sfx.exe" "${{ inputs.location }}\msys2-x86_64-latest.sfx.exe"
+    - name: "Extract and do first launch"
+      shell: pwsh
+      run: |
+        Start-Process -Wait "${{ inputs.location }}\msys2-x86_64-latest.sfx.exe" -ArgumentList '-y','-o"${{ inputs.location }}"'
+        Remove-Item "${{ inputs.location }}\msys2-x86_64-latest.sfx.exe"
+        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','exit')
+    - name: "Cache Pacman packages"
+      uses: actions/cache@v3
+      with: 
+        path: |
+          /var/cache/pacman/pkg
+        key: pacman-${{ steps.pktListHash.outputs.pkgTarget }}
+        restore-keys: pacman-
+    - name: "Update package database, core packages and Install additionnal packages"
+      shell: pwsh
+      run: |
+        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Suy --noconfirm"' )
+        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Suy --noconfirm"' )
+        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Su --noconfirm ${{ inputs.install }}"' )
