@@ -34,7 +34,6 @@ runs:
       shell: pwsh
       run: |
         "location=" + (Get-Item -Path "${{ inputs.location }}" || New-Item -Path "${{ inputs.location }}" -ItemType Directory).FullName >> $env:GITHUB_OUTPUT
-        ""${{ output.location }} = 
         switch( "${{ inputs.msystem }}" ) {
           'MSYS' { $shellType = '-msys2' }
           'MINGW32' { $shellType = '-mingw32' }
