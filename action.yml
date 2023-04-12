@@ -56,13 +56,13 @@ runs:
     - name: "Download self-extracting archive"
       shell: pwsh
       run: |
-        Start-BitsTransfer "https://repo.msys2.org/distrib/msys2-x86_64-latest.sfx.exe" "${{ output.location }}\msys2-x86_64-latest.sfx.exe"
+        Start-BitsTransfer "https://repo.msys2.org/distrib/msys2-x86_64-latest.sfx.exe" "${{ outputs.location }}\msys2-x86_64-latest.sfx.exe"
     - name: "Extract and do first launch"
       shell: pwsh
       run: |
-        Start-Process -Wait "${{ output.location }}\msys2-x86_64-latest.sfx.exe" -ArgumentList '-y','-o"${{ inputs.location }}"'
-        Remove-Item "${{ output.location }}\msys2-x86_64-latest.sfx.exe"
-        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','exit')
+        Start-Process -Wait "${{ outputs.location }}\msys2-x86_64-latest.sfx.exe" -ArgumentList '-y','-o"${{ inputs.location }}"'
+        Remove-Item "${{ outputs.location }}\msys2-x86_64-latest.sfx.exe"
+        Start-Process -NoNewWindow -Wait -FilePath ${{ outputs.msys2_shell_cmd }} -ArgumentList $( ${{ outputs.msys2_shell_args }},'-c','exit')
     - name: "Cache Pacman packages"
       uses: actions/cache@v3
       with: 
