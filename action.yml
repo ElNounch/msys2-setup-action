@@ -16,7 +16,7 @@ inputs:
 outputs:
   location:
     description: "Full path of MSys2 parent folder"
-    value: ${{ steps.locate.outputs.locate }}
+    value: ${{ steps.locate.outputs.location }}
   pkgTarget:
     description: ""
     value: "${{ steps.pktListHash.pkgTarget }}"
