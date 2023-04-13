@@ -34,15 +34,7 @@ runs:
       shell: pwsh
       run: |
         "location=" + (Get-Item -Path "${{ inputs.location }}" || New-Item -Path "${{ inputs.location }}" -ItemType Directory).FullName >> $env:GITHUB_OUTPUT
-        switch( "${{ inputs.msystem }}" ) {
-          'MSYS' { $shellType = '-msys2' }
-          'MINGW32' { $shellType = '-mingw32' }
-          'MINGW64' { $shellType = '-mingw64' }
-          'UCRT64' { $shellType = '-ucrt64' }
-          'CLANG32' { $shellType = '-clang32' }
-          'CLANG64' { $shellType = '-clang64' }
-          'CLANGARM64' { $shellType = '-clangarm64???' }
-        }
+        $shellType = "${{ inputs.msystem }}".ToLower()
         $cmd = "${{ inputs.location }}\msys64\msys2_shell.cmd"
         $args = "'-no-start','-defterm','$shellType','-shell','bash','-here'"
 
@@ -73,6 +65,6 @@ runs:
     - name: "Update package database, core packages and Install additionnal packages"
       shell: pwsh
       run: |
-        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','pacman -Syu --noconfirm' )
-        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','pacman -Syu --noconfirm' )
-        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','pacman -S --noconfirm ${{ inputs.install }}' )
+        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','pacman -Syuu --noconfirm' )
+        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','pacman -Su --noconfirm -needed' )
+        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','pacman -S --noconfirm -needed ${{ inputs.install }}' )
