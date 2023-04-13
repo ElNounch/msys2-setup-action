@@ -34,7 +34,7 @@ runs:
       shell: pwsh
       run: |
         "location=" + (Get-Item -Path "${{ inputs.location }}" || New-Item -Path "${{ inputs.location }}" -ItemType Directory).FullName >> $env:GITHUB_OUTPUT
-        $shellType = "${{ inputs.msystem }}".ToLower()
+        $shellType = "-${{ inputs.msystem }}".ToLower()
         $cmd = "${{ inputs.location }}\msys64\msys2_shell.cmd"
         $args = "'-no-start','-defterm','$shellType','-shell','bash','-here'"
 
