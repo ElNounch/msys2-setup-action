@@ -68,4 +68,5 @@ runs:
         Set-PSDebug -Trace 2
         Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Syuu --noconfirm"')
         Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Su --noconfirm"')
-        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"source /etc/msystem && pacman -S $( "${{ inputs.install }}" -split " " | foreach {"$_ $_"}) --noconfirm"')
+        $requiredInstall = $( "${{ inputs.install }}" -split " ") | foreach {"$_ $_"}
+        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"source /etc/msystem && pacman -S $( $requiredInstall -join " ") --noconfirm"')
