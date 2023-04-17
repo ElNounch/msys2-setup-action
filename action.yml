@@ -46,7 +46,7 @@ runs:
       id: pktListHash
       shell: pwsh
       run: |
-        'pkgTarget=$((Get-FileHash -Algorithm SHA1 -InputStream ([IO.MemoryStream]::new([byte[]][char[]]"${{ inputs.install_generic }},${{ inputs.install_msystem }}")).Hash)' >> $env:GITHUB_OUTPUT
+        'pkgTarget=$((Get-FileHash -Algorithm SHA1 -InputStream ([IO.MemoryStream]::new([byte[]][char[]]"${{ inputs.install_generic }},${{ inputs.install_msystem }}"))).Hash)' >> $env:GITHUB_OUTPUT
     - name: "Download self-extracting archive"
       shell: pwsh
       run: |
