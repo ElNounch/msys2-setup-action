@@ -64,6 +64,21 @@ runs:
           "${{ steps.locate.outputs.location }}\msys64\var\cache\pacman\pkg"
         key: "pacman-${{ steps.pktListHash.outputs.pkgTarget }}"
         restore-keys: pacman-
+      - name: "Msys2 as default shell"
+        shell: pwsh
+        run: |
+          @'
+          @echo off
+          set ARGS=${{ steps.msys2.outputs.msys2_shell_args }}
+          :Loop
+          if "%~1" == "" GoTo Done
+          set ARGS=%ARGS%,'%~1'
+          shift
+          GoTo Loop
+          :Done
+          powershell -Command "& {Exit (Start-Process -NoNewWindow -Wait -FilePath ${{ steps.msys2.outputs.msys2_shell_cmd }} -ArgumentList $( %ARGS% ) -PassThru).ExitCode}"
+          exit %ERRORLEVEL%
+          '@>"${env:WINDIR}\dynamic_shell_action.cmd"
     - name: "Update package database, core packages and Install additionnal packages"
       shell: pwsh
       run: |
