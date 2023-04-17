@@ -4,9 +4,11 @@ inputs:
   location:
     description: "MSys2 location"
     required: true
-  install:
-    description: "Extra packages to setup"
+  install_generic
+    description: "Required base packages to setup"
     default: ""
+  install_msystem
+    description: "Required package arch-specific"
   msystem:
     description: "Variant of the environment to set by default: MSYS, MINGW32, MINGW64, UCRT64, CLANG32, CLANG64 or CLANGARM64"
     default: "UCRT64"
