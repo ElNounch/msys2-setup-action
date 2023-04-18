@@ -29,8 +29,8 @@ outputs:
     description: "shell executable required arguments"
     value: ${{ steps.locate.outputs.msys2_shell_args }}
 defaults:
-      run:
-        shell: "dynamic_shell_action.cmd -f {0}"
+  run:
+    shell: "dynamic_shell_action.cmd -f {0}"
 runs:
   using: composite
   steps:
@@ -62,7 +62,7 @@ runs:
         Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','exit')
     - name: "Cache Pacman packages"
       uses: actions/cache@v3
-      with: 
+      with:
         path: |
           "${{ steps.locate.outputs.location }}\msys64\var\cache\pacman\pkg"
         key: "pacman-${{ steps.pktListHash.outputs.pkgTarget }}"
@@ -85,8 +85,9 @@ runs:
     - name: "Update package database, core packages and Install additionnal packages"
       shell: pwsh
       run: |
-         pacman -Syyuu
-         pacman -Su
+        pacman -Syyuu
+        pacman -Su
+
 #        Set-PSDebug -Trace 2
 #        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Syuu --noconfirm"')
 #        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Su --noconfirm"')
