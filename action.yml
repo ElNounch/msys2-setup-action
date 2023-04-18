@@ -79,13 +79,17 @@ runs:
         powershell -Command "& {Exit (Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( %ARGS% ) -PassThru).ExitCode}"
         exit %ERRORLEVEL%
         '@>"${env:WINDIR}\dynamic_shell_action.cmd"
-    - name: "Update package database, core packages and Install additionnal packages"
+    - name: "Update package database anf core packages"
+      shell pwsh
+      run: |
+        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Syuu --noconfirm"')
+        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Su --noconfirm"')
+    - name: "Install additionnal packages"
       shell: "dynamic_shell_action.cmd -f {0}"
       run: |
-        pacman -Syyuu
-        pacman -Su
-#        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Syuu --noconfirm"')
-#        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Su --noconfirm"')
+         source /etc/msystem
+         ["${{ inputs.install_generic }}" != ""] && pacman -Su ${{ inputs.install_generic }}
+         ["${{ inputs.install_msystem }}" != ""] && pacman -Su ${{ inputs.install_msystem }}
 #        $requiredInstall = $(( "${{ inputs.install_generic }}" -split " ") + (("${{ inputs.install_msystem }}" -split " ") | foreach {"\${MINGW_PACKAGE_PREFIX}$_"}))
 #        $requiredInstall = $requiredInstall -join " "
 #        Write-output "$requiredInstall"
