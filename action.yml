@@ -88,10 +88,10 @@ runs:
       shell: "dynamic_shell_action.cmd -f {0}"
       run: |
          source /etc/msystem
-         ["${{ inputs.install_generic }}" != ""] && (
+         ["${{ inputs.install_generic }}" -ne ""] && (
            echo "${{ inputs.install_generic }}" | awk -v RS=" " -v ORS="\n" -- '' | xargs pacman -S 
          )
-         ["${{ inputs.install_msystem }}" != ""] && (
+         ["${{ inputs.install_msystem }}" -ne ""] && (
            echo "${{ inputs.install_msystem }}" | awk -v prefix="$MINGW_PACKAGE_PREFIX" -v RS=" " -v ORS="\n" -- '{print prefix $1}' | xargs pacman -S
          )
 #        $requiredInstall = $(( "${{ inputs.install_generic }}" -split " ") + (("${{ inputs.install_msystem }}" -split " ") | foreach {"\${MINGW_PACKAGE_PREFIX}$_"}))
