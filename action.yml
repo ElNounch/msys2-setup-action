@@ -89,10 +89,10 @@ runs:
       run: |
          source /etc/msystem
          ["${{ inputs.install_generic }}" != ""] && (
-           echo "${{ inputs.install_generic }}" | awk RS=':' | xargs pacman -S 
+           echo "${{ inputs.install_generic }}" | awk -v RS=" " -v ORS="\n" | xargs pacman -S 
          )
          ["${{ inputs.install_msystem }}" != ""] && (
-           echo "${{ inputs.install_msystem }}" | awk RS=':' | xargs pacman -S
+           echo "${{ inputs.install_msystem }}" | awk -v RS=" " -v ORS="\n" | xargs pacman -S
          )
 #        $requiredInstall = $(( "${{ inputs.install_generic }}" -split " ") + (("${{ inputs.install_msystem }}" -split " ") | foreach {"\${MINGW_PACKAGE_PREFIX}$_"}))
 #        $requiredInstall = $requiredInstall -join " "
