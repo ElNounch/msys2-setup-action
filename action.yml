@@ -28,9 +28,6 @@ outputs:
   msys2_shell_args:
     description: "shell executable required arguments"
     value: ${{ steps.locate.outputs.msys2_shell_args }}
-defaults:
-  step:
-    shell: "dynamic_shell_action.cmd -f {0}"
 runs:
   using: composite
   steps:
@@ -83,6 +80,7 @@ runs:
         exit %ERRORLEVEL%
         '@>"${env:WINDIR}\dynamic_shell_action.cmd"
     - name: "Update package database, core packages and Install additionnal packages"
+      shell: "dynamic_shell_action.cmd -f {0}"
       run: |
         pacman -Syyuu
         pacman -Su
