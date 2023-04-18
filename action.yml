@@ -29,7 +29,7 @@ outputs:
     description: "shell executable required arguments"
     value: ${{ steps.locate.outputs.msys2_shell_args }}
 defaults:
-  run:
+  step:
     shell: "dynamic_shell_action.cmd -f {0}"
 runs:
   using: composite
