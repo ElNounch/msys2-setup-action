@@ -83,12 +83,9 @@ runs:
         exit %ERRORLEVEL%
         '@>"${env:WINDIR}\dynamic_shell_action.cmd"
     - name: "Update package database, core packages and Install additionnal packages"
-      shell: pwsh
       run: |
         pacman -Syyuu
         pacman -Su
-
-#        Set-PSDebug -Trace 2
 #        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Syuu --noconfirm"')
 #        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Su --noconfirm"')
 #        $requiredInstall = $(( "${{ inputs.install_generic }}" -split " ") + (("${{ inputs.install_msystem }}" -split " ") | foreach {"\${MINGW_PACKAGE_PREFIX}$_"}))
