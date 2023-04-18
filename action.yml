@@ -92,7 +92,7 @@ runs:
            echo "${{ inputs.install_generic }}" | awk -v RS=" " -v ORS="\n" -- '' | xargs pacman -S 
          )
          [ -z "${{ inputs.install_msystem }}" ] || (
-           echo "${{ inputs.install_msystem }}" | awk -v prefix="$MINGW_PACKAGE_PREFIX" -v RS=" " -v ORS="\n" -- '{print prefix $1}' | xargs pacman -S
+           echo "${{ inputs.install_msystem }}" | awk -v prefix="$MINGW_PACKAGE_PREFIX" -v RS=" " -v ORS="\n" -- '{print prefix "-" $1}' | xargs pacman -S
          )
 #        $requiredInstall = $(( "${{ inputs.install_generic }}" -split " ") + (("${{ inputs.install_msystem }}" -split " ") | foreach {"\${MINGW_PACKAGE_PREFIX}$_"}))
 #        $requiredInstall = $requiredInstall -join " "
