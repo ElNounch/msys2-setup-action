@@ -87,7 +87,7 @@ runs:
     - name: "Install additionnal packages"
       shell: "dynamic_shell_action.cmd -f {0}"
       run: |
-         source /etc/msystem : je 
+         source /etc/msystem
          ["${{ inputs.install_generic }}" != ""] && (
            echo "${{ inputs.install_generic }}" | awk RS=: | xargs pacman -S 
          )
