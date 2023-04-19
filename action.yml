@@ -66,12 +66,14 @@ runs:
         key: "pacman-${{ steps.pktListHash.outputs.pkgTarget }}"
         restore-keys: pacman-
     - name: "Update package database and core packages"
+      shell: "msys2 -f {0}"
       run: pacman -Syuu --noconfirm
 #      shell: pwsh
 #      run: |
 #        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Syuu --noconfirm"')
 #        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Su --noconfirm"')
     - name: "Install additionnal packages"
+      shell: "msys2 -f {0}"
 #      shell: "dynamic_shell_action.cmd -f {0}"
       run: |
          source /etc/msystem
