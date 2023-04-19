@@ -28,8 +28,9 @@ runs:
   using: composite
   steps:
     - name: Inject local action folder to PATH
-      shell: cmd
-      run: echo ${GITHUB_ACTION_PATH}>>${GITHUB_PATH}
+      shell: pwsh
+      run: |
+        "${env:GITHUB_ACTION_PATH}">>${env:GITHUB_PATH}
     - name: "Compute paths and parametets"
       id: locate
       shell: pwsh
