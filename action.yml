@@ -34,8 +34,7 @@ runs:
   steps:
     - name: Inject local action folder to PATH
       shell: cmd
-      run |
-        echo ${GITHUB_ACTION_PATH}>>${GITHUB_PATH}
+      run: echo ${GITHUB_ACTION_PATH}>>${GITHUB_PATH}
     - name: "Compute paths and parametets"
       id: locate
       shell: pwsh
