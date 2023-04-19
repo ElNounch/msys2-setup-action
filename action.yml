@@ -39,12 +39,19 @@ runs:
         $shellType = "-${{ inputs.msystem }}".ToLower()
         $cmd = "${{ inputs.location }}\msys64\msys2_shell.cmd"
         $args = "'-no-start','-defterm','$shellType','-shell','bash','-here'"
+        @"
+        LOGINSHELL=bash
+        MSYSTEM=${{ inputs.msystem }}
+        MSYSCON=defterm
+        CHERE_INVOKING=enabled_from_arguments
+        MSYS2_NOSTART=yes
+        '@ >> $env:GITHUB_ENV
 
         "msys2_shell_cmd=$cmd" >> $env:GITHUB_OUTPUT
         "msys2_shell_args=$args" >> $env:GITHUB_OUTPUT
     - name: "Compute hash of required packages names"
       id: pktListHash
-      shell: pwsh
+      shell: pwsh 
       run: |
         "pkgTarget=$((Get-FileHash -Algorithm SHA1 -InputStream ([IO.MemoryStream]::new([byte[]][char[]]`"${{ inputs.install_generic }},${{ inputs.install_msystem }}` "))).Hash)" >> $env:GITHUB_OUTPUT
     - name: "Download self-extracting archive"
