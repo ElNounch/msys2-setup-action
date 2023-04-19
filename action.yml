@@ -52,12 +52,15 @@ runs:
       shell: pwsh
       run: |
         Start-BitsTransfer "https://repo.msys2.org/distrib/msys2-x86_64-latest.sfx.exe" "${{ steps.locate.outputs.location }}\msys2-x86_64-latest.sfx.exe"
-    - name: "Extract and do first launch"
+    - name: "Extract"
       shell: pwsh
       run: |
         Start-Process -Wait "${{ steps.locate.outputs.location }}\msys2-x86_64-latest.sfx.exe" -ArgumentList '-y','-o"${{ steps.locate.outputs.location }}"'
         Remove-Item "${{ steps.locate.outputs.location }}\msys2-x86_64-latest.sfx.exe"
-        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','exit')
+    - name: "Initial launch"
+      shell: "msys2 -f {0}"
+      run: exit
+#        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','exit')
     - name: "Cache Pacman packages"
       uses: actions/cache@v3
       with:
@@ -68,13 +71,11 @@ runs:
     - name: "Update package database and core packages"
       shell: "msys2 -f {0}"
       run: pacman -Syuu --noconfirm
-#      shell: pwsh
-#      run: |
-#        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Syuu --noconfirm"')
-#        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Su --noconfirm"')
+    - name: "Update core packages"
+      shell: "msys2 -f {0}"
+      run: pacman -Su --noconfirm
     - name: "Install additionnal packages"
       shell: "msys2 -f {0}"
-#      shell: "dynamic_shell_action.cmd -f {0}"
       run: |
          source /etc/msystem
          [ -z "${{ inputs.install_generic }}" ] || (
