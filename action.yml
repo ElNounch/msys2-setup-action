@@ -28,17 +28,24 @@ outputs:
   msys2_shell_args:
     description: "shell executable required arguments"
     value: ${{ steps.locate.outputs.msys2_shell_args }}
+defaults:
+  steps:
+    shell: "msys2 -f {0}"
 runs:
   using: composite
   steps:
+    - name: Inject local action folder to PATH
+      shell: cmd
+      run |
+        echo ${GITHUB_ACTION_PATH}>>${GITHUB_PATH}
     - name: "Compute outputs"
       id: locate
       shell: pwsh
       run: |
-        "location=" + (Get-Item -Path "${{ inputs.location }}\" || New-Item -Path "${{ inputs.location }}" -ItemType Directory).FullName >> $env:GITHUB_OUTPUT
-        $shellType = "-${{ inputs.msystem }}".ToLower()
-        $cmd = "${{ inputs.location }}\msys64\msys2_shell.cmd"
-        $args = "'-no-start','-defterm','$shellType','-shell','bash','-here'"
+#        "location=" + (Get-Item -Path "${{ inputs.location }}\" || New-Item -Path "${{ inputs.location }}" -ItemType Directory).FullName >> $env:GITHUB_OUTPUT
+#        $shellType = "-${{ inputs.msystem }}".ToLower()
+#        $cmd = "${{ inputs.location }}\msys64\msys2_shell.cmd"
+#        $args = "'-no-start','-defterm','$shellType','-shell','bash','-here'"
         @"
         MSYS2_CMD=${{ inputs.location }}\msys64\msys2_shell.cmd
         LOGINSHELL=bash
@@ -46,10 +53,9 @@ runs:
         MSYSCON=defterm
         CHERE_INVOKING=enabled_from_arguments
         MSYS2_NOSTART=yes
-        '@ >> $env:GITHUB_ENV
-
-        "msys2_shell_cmd=$cmd" >> $env:GITHUB_OUTPUT
-        "msys2_shell_args=$args" >> $env:GITHUB_OUTPUT
+        "@ >> ${env:GITHUB_ENV}
+#        "msys2_shell_cmd=$cmd" >> $env:GITHUB_OUTPUT
+#        "msys2_shell_args=$args" >> $env:GITHUB_OUTPUT
     - name: "Compute hash of required packages names"
       id: pktListHash
       shell: pwsh 
