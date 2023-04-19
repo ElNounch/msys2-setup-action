@@ -5,16 +5,14 @@ inputs:
     description: "MSys2 location"
     required: true
   install_generic:
-    description: "Required base packages to setup"
+    description: "Required base packages"
     default: ""
   install_msystem:
-    description: "Required package arch-specific"
+    description: "Required arch-specific packages"
+    default: ""
   msystem:
     description: "Variant of the environment to set by default: MINGW32, MINGW64, UCRT64, CLANG32, CLANG64 or CLANGARM64"
     default: "UCRT64"
-  update:
-    description: "Shall we ?"
-    default: "true"
 outputs:
   location:
     description: "Full path of MSys2 parent folder"
@@ -22,12 +20,12 @@ outputs:
   pkgTarget:
     description: ""
     value: "${{ steps.pktListHash.pkgTarget }}"
-  msys2_shell_cmd:
-    description: "full shell executable path"
-    value: ${{ steps.locate.outputs.msys2_shell_cmd }}
-  msys2_shell_args:
-    description: "shell executable required arguments"
-    value: ${{ steps.locate.outputs.msys2_shell_args }}
+#  msys2_shell_cmd:
+#    description: "full shell executable path"
+#    value: ${{ steps.locate.outputs.msys2_shell_cmd }}
+#  msys2_shell_args:
+#    description: "shell executable required arguments"
+#    value: ${{ steps.locate.outputs.msys2_shell_args }}
 defaults:
   steps:
     shell: "msys2 -f {0}"
@@ -38,11 +36,11 @@ runs:
       shell: cmd
       run |
         echo ${GITHUB_ACTION_PATH}>>${GITHUB_PATH}
-    - name: "Compute outputs"
+    - name: "Compute paths and parametets"
       id: locate
       shell: pwsh
       run: |
-#        "location=" + (Get-Item -Path "${{ inputs.location }}\" || New-Item -Path "${{ inputs.location }}" -ItemType Directory).FullName >> $env:GITHUB_OUTPUT
+        "location=" + (Get-Item -Path "${{ inputs.location }}\" || New-Item -Path "${{ inputs.location }}" -ItemType Directory).FullName >> $env:GITHUB_OUTPUT
 #        $shellType = "-${{ inputs.msystem }}".ToLower()
 #        $cmd = "${{ inputs.location }}\msys64\msys2_shell.cmd"
 #        $args = "'-no-start','-defterm','$shellType','-shell','bash','-here'"
@@ -79,12 +77,13 @@ runs:
         key: "pacman-${{ steps.pktListHash.outputs.pkgTarget }}"
         restore-keys: pacman-
     - name: "Update package database and core packages"
-      shell: pwsh
-      run: |
-        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Syuu --noconfirm"')
-        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Su --noconfirm"')
+      run pacman -Syuu --noconfirm
+#      shell: pwsh
+#      run: |
+#        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Syuu --noconfirm"')
+#        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Su --noconfirm"')
     - name: "Install additionnal packages"
-      shell: "dynamic_shell_action.cmd -f {0}"
+#      shell: "dynamic_shell_action.cmd -f {0}"
       run: |
          source /etc/msystem
          [ -z "${{ inputs.install_generic }}" ] || (
@@ -93,7 +92,3 @@ runs:
          [ -z "${{ inputs.install_msystem }}" ] || (
            echo "${{ inputs.install_msystem }}" | awk -v prefix="$MINGW_PACKAGE_PREFIX" -v RS=" " -v ORS="\n" -- '{print prefix "-" $1}' | xargs pacman -S --noconfirm 
          )
-#        $requiredInstall = $(( "${{ inputs.install_generic }}" -split " ") + (("${{ inputs.install_msystem }}" -split " ") | foreach {"\${MINGW_PACKAGE_PREFIX}$_"}))
-#        $requiredInstall = $requiredInstall -join " "
-#        Write-output "$requiredInstall"
-#        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"source /etc/msystem && pacman -S $requiredInstall --noconfirm"')
