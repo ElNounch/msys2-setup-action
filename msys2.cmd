@@ -1,1 +1,1 @@
-@%MSYS2_ROOT% $*
+@%MSYS2_ROOT% %*
