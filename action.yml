@@ -60,7 +60,9 @@ runs:
         Remove-Item "${{ steps.locate.outputs.location }}\msys2-x86_64-latest.sfx.exe"
     - name: "Initial launch"
       shell: "msys2 -f {0}"
-      run: exit
+      run: |
+        echo "Here we are..."
+        env
 #        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','exit')
     - name: "Cache Pacman packages"
       uses: actions/cache@v3
