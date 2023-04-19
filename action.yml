@@ -40,6 +40,7 @@ runs:
         $cmd = "${{ inputs.location }}\msys64\msys2_shell.cmd"
         $args = "'-no-start','-defterm','$shellType','-shell','bash','-here'"
         @"
+        MSYS2_CMD=${{ inputs.location }}\msys64\msys2_shell.cmd
         LOGINSHELL=bash
         MSYSTEM=${{ inputs.msystem }}
         MSYSCON=defterm
