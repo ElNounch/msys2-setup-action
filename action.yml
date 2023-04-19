@@ -77,7 +77,7 @@ runs:
         key: "pacman-${{ steps.pktListHash.outputs.pkgTarget }}"
         restore-keys: pacman-
     - name: "Update package database and core packages"
-      run pacman -Syuu --noconfirm
+      run: pacman -Syuu --noconfirm
 #      shell: pwsh
 #      run: |
 #        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','"pacman -Syuu --noconfirm"')
