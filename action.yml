@@ -21,8 +21,9 @@ outputs:
     description: ""
     value: "${{ steps.pktListHash.pkgTarget }}"
 defaults:
-  steps:
-    shell: "msys2 -f {0}"
+  runs;
+    steps:
+      shell: "msys2 -f {0}"
 runs:
   using: composite
   steps:
