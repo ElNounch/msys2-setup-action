@@ -1,9 +1,6 @@
 name: "Msys2"
 description: "Prepare Msys2"
 inputs:
-  location:
-    description: "MSys2 location"
-    required: true
   install_generic:
     description: "Required base packages"
     default: ""
@@ -24,11 +21,11 @@ defaults:
 runs:
   using: composite
   steps:
-    - name: Inject local action folder to PATH
+    - name: 'Inject local action folder to PATH'
       shell: pwsh
       run: |
         "${env:GITHUB_ACTION_PATH}">>${env:GITHUB_PATH}
-    - name: "Compute paths and parametets"
+    - name: 'Compute paths and parameters'
       id: locate
       shell: pwsh
       run: |
@@ -44,7 +41,7 @@ runs:
       id: pktListHash
       shell: pwsh 
       run: |
-        "pkgTarget=$((Get-FileHash -Algorithm SHA1 -InputStream ([IO.MemoryStream]::new([byte[]][char[]]`"${{ inputs.install_generic }},${{ inputs.install_msystem }}` "))).Hash)" >> $env:GITHUB_OUTPUT
+        "pkgTarget=$((Get-FileHash -Algorithm SHA1 -InputStream ([IO.MemoryStream]::new([byte[]][char[]]`"${{ inputs.install_generic }} ${{ inputs.install_msystem }}` "))).Hash)" >> $env:GITHUB_OUTPUT
     - name: "Download self-extracting archive"
       shell: pwsh
       run: |
@@ -55,7 +52,7 @@ runs:
         Start-Process -Wait -NoNewWindow -FilePath ".\msys2-x86_64-latest.sfx.exe" -ArgumentList @( '-y' )
         Remove-Item "msys2-x86_64-latest.sfx.exe"
     - name: "Initial launch"
-#      working-directory: "${{ GITHUB_ACTION_PATH }}\\msys64"
+      working-directory: "${{ GITHUB_WORKSPACE }}\\msys64"
       shell: "msys2 -f {0}"
       run: |
         echo "Here we are..."
@@ -65,15 +62,17 @@ runs:
       uses: actions/cache@v3
       with:
         path: |
-          "${{ steps.locate.outputs.location }}\msys64\var\cache\pacman\pkg"
+          "${{ GITHUB_WORKSPACE }}\msys64\var\cache\pacman\pkg"
         key: "pacman-${{ steps.pktListHash.outputs.pkgTarget }}"
         restore-keys: pacman-
     - name: "Update package database and core packages"
       shell: "msys2 -f {0}"
-      run: pacman -Syuu --noconfirm
+      run: |
+        pacman -Syuu --noconfirm
     - name: "Update core packages"
       shell: "msys2 -f {0}"
-      run: pacman -Su --noconfirm
+      run: |
+        pacman -Su --noconfirm
     - name: "Install additionnal packages"
       shell: "msys2 -f {0}"
       run: |
