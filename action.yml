@@ -41,7 +41,7 @@ runs:
         LOGINSHELL=bash
         MSYSTEM=${{ inputs.msystem }}
         MSYSCON=defterm
-        CHERE_INVOKING=enabled_from_arguments
+        CHERE_INVOKING=1
         MSYS2_NOSTART=yes
         "@ >> ${env:GITHUB_ENV}
     - name: "Compute hash of required packages names"
@@ -59,11 +59,11 @@ runs:
         Start-Process -Wait "${{ steps.locate.outputs.location }}\msys2-x86_64-latest.sfx.exe" -ArgumentList '-y','-o"${{ steps.locate.outputs.location }}"'
         Remove-Item "${{ steps.locate.outputs.location }}\msys2-x86_64-latest.sfx.exe"
     - name: "Initial launch"
-      working-directory: "${{ steps.locate.outputs.location }}\\msys64"
+#      working-directory: "${{ steps.locate.outputs.location }}\\msys64"
       shell: "msys2 -f {0}"
       run: |
         echo "Here we are..."
-        env
+#        env
 #        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','exit')
     - name: "Cache Pacman packages"
       uses: actions/cache@v3
