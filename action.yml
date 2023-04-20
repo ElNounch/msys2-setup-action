@@ -35,9 +35,8 @@ runs:
       id: locate
       shell: pwsh
       run: |
-#       "location=" + (Get-Item -Path "${{ inputs.location }}\" || New-Item -Path "${{ inputs.location }}" -ItemType Directory).FullName >> $env:GITHUB_OUTPUT
         @"
-        MSYS2_CMD=${{ GITHUB_ACTION_PATH }}\msys64\msys2_shell.cmd
+        MSYS2_CMD=${{GITHUB_ACTION_PATH}}\msys64\msys2_shell.cmd
         LOGINSHELL=bash
         MSYSTEM=${{ inputs.msystem }}
         MSYSCON=defterm
