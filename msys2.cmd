@@ -1,5 +1,5 @@
 @echo off
-set ARGS="%~1"
+set ARGS='%~1'
 Shift
 :Loop
 If "%~1" == "" GoTo Done
