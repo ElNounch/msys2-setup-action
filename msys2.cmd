@@ -1,3 +1,3 @@
 @echo off
-Call %MSYS2_CMD% $*
+Call %MSYS2_CMD% %*
 Exit %ErrorLevel%
