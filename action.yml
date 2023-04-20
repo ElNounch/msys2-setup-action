@@ -52,7 +52,7 @@ runs:
     - name: "Extract"
       shell: pwsh
       run: |
-        Start-Process -Wait -NoNewWindow -FilePath ".\msys2-x86_64-latest.sfx.exe" -ArgumentList [ '-y' ]
+        Start-Process -Wait -NoNewWindow -FilePath ".\msys2-x86_64-latest.sfx.exe" -ArgumentList @( '-y' )
         Remove-Item "msys2-x86_64-latest.sfx.exe"
     - name: "Initial launch"
 #      working-directory: "${{ GITHUB_ACTION_PATH }}\\msys64"
