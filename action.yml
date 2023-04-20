@@ -51,12 +51,12 @@ runs:
     - name: "Download self-extracting archive"
       shell: pwsh
       run: |
-        Start-BitsTransfer "https://repo.msys2.org/distrib/msys2-x86_64-latest.sfx.exe" "${{ GITHUB_ACTION_PATH }}\msys2-x86_64-latest.sfx.exe"
+        Start-BitsTransfer "https://repo.msys2.org/distrib/msys2-x86_64-latest.sfx.exe" "msys2-x86_64-latest.sfx.exe"
     - name: "Extract"
       shell: pwsh
       run: |
-        Start-Process -Wait "${{ GITHUB_ACTION_PATH }}\msys2-x86_64-latest.sfx.exe" -ArgumentList '-y','-o"${{ steps.locate.outputs.location }}"'
-        Remove-Item "${{ GITHUB_ACTION_PATH }}\msys2-x86_64-latest.sfx.exe"
+        Start-Process -Wait "msys2-x86_64-latest.sfx.exe" -ArgumentList '-y'
+        Remove-Item "msys2-x86_64-latest.sfx.exe"
     - name: "Initial launch"
 #      working-directory: "${{ GITHUB_ACTION_PATH }}\\msys64"
       shell: "msys2 -f {0}"
