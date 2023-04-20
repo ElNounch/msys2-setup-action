@@ -36,7 +36,7 @@ runs:
       shell: pwsh
       run: |
         @"
-        MSYS2_CMD=${env:GITHUB_ACTION_PATH}\msys64\msys2_shell.cmd
+        MSYS2_CMD=${env:GITHUB_WORKSPACE}\msys64\msys2_shell.cmd
         LOGINSHELL=bash
         MSYSTEM=${{ inputs.msystem }}
         MSYSCON=defterm
