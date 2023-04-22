@@ -1,5 +1,5 @@
 @echo off
-set ARGS='-here','-defterm','-shell','bash'
+set ARGS='-here','-defterm','-shell','bash','-no-start'
 :Loop
 If "%~1" == "" GoTo Done
 Set ARGS=%ARGS%,'%~1'
