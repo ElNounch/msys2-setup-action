@@ -1,4 +1,4 @@
-@echo off
+Rem @echo off
 setlocal enabledelayedexpansion
 set ARGS='-here','-defterm','-shell','bash','-no-start'
 :Loop
