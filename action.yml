@@ -30,13 +30,8 @@ runs:
       shell: pwsh
       run: |
         @"
-        MSYS2_ROOT=${env:GITHUB_WORKSPACE}\msys64
         MSYS2_CMD=${env:GITHUB_WORKSPACE}\msys64\msys2_shell.cmd
-        LOGINSHELL=bash
         MSYSTEM=${{ inputs.msystem }}
-        MSYSCON=defterm
-        CHERE_INVOKING=1
-        MSYS2_NOSTART=yes
         "@ >> ${env:GITHUB_ENV}
     - name: "Compute hash of required packages names"
       id: pktListHash
