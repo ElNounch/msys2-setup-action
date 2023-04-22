@@ -1,4 +1,5 @@
 @echo off
+setlocal enabledelayedexpansion
 set ARGS='-here','-defterm','-shell','bash','-no-start'
 :Loop
 If "%~1" == "" GoTo Done
