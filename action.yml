@@ -49,10 +49,10 @@ runs:
         Remove-Item "msys2-x86_64-latest.sfx.exe"
     - name: "Initial launch"
 #      working-directory: "${env.GITHUB_WORKSPACE}\\msys64"
-      shell: "msys2 -f {0}"
+      shell: "msys2.cmd -f {0}"
       run: |
         echo "Here we are..."
-        env
+        wait -n
 #        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','exit')
     - name: "Cache Pacman packages"
       uses: actions/cache@v3
@@ -62,15 +62,17 @@ runs:
         key: "pacman-${{ steps.pktListHash.outputs.pkgTarget }}"
         restore-keys: pacman-
     - name: "Update package database and core packages"
-      shell: "msys2 -f {0}"
+      shell: "msys2.cmd -f {0}"
       run: |
         pacman -Syuu --noconfirm
+        wait -n
     - name: "Update core packages"
-      shell: "msys2 -f {0}"
+      shell: "msys2.cmd -f {0}"
       run: |
         pacman -Su --noconfirm
+        wait -n
     - name: "Install additionnal packages"
-      shell: "msys2 -f {0}"
+      shell: "msys2.cmd -f {0}"
       run: |
          source /etc/msystem
          [ -z "${{ inputs.install_generic }}" ] || (
