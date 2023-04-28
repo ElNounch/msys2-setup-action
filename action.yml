@@ -62,9 +62,7 @@ runs:
     - name: "Update package database and core packages"
       shell: "msys2.cmd -f {0}"
       run: |
-        while ! systemctl show pacman-init.service | grep SubState=exited; do
-          sleep 1
-        done
+        sleep 10
         pacman -Syuu --noconfirm
     - name: "Update core packages"
       shell: "msys2.cmd -f {0}"
