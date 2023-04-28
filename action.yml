@@ -76,8 +76,8 @@ runs:
       run: |
          source /etc/msystem
          [ -z "${{ inputs.install_generic }}" ] || (
-           echo "${{ inputs.install_generic }}" | awk -v RS=" " -v ORS="\n" -- '' | xargs pacman -S --noconfirm
+           echo "${{ inputs.install_generic }}" | awk -v RS=" " -v ORS="\n" -- '' | xargs pacman -S --noconfirm --needed
          )
          [ -z "${{ inputs.install_msystem }}" ] || (
-           echo "${{ inputs.install_msystem }}" | awk -v prefix="$MINGW_PACKAGE_PREFIX" -v RS=" " -v ORS="\n" -- '{print prefix "-" $1}' | xargs pacman -S --noconfirm 
+           echo "${{ inputs.install_msystem }}" | awk -v prefix="$MINGW_PACKAGE_PREFIX" -v RS=" " -v ORS="\n" -- '{print prefix "-" $1}' | xargs pacman -S --noconfirm --needed
          )
