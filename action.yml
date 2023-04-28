@@ -52,7 +52,7 @@ runs:
       shell: "msys2.cmd -f {0}"
       run: |
         echo "Here we are..."
-        wait -n
+        sleep 5
 #        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','exit')
     - name: "Cache Pacman packages"
       uses: actions/cache@v3
@@ -65,12 +65,12 @@ runs:
       shell: "msys2.cmd -f {0}"
       run: |
         pacman -Syuu --noconfirm
-        wait -n
+        sleep 5
     - name: "Update core packages"
       shell: "msys2.cmd -f {0}"
       run: |
         pacman -Su --noconfirm
-        wait -n
+        sleep 5
     - name: "Install additionnal packages"
       shell: "msys2.cmd -f {0}"
       run: |
