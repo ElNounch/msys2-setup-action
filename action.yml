@@ -48,11 +48,10 @@ runs:
         Start-Process -Wait -NoNewWindow -FilePath ".\msys2-x86_64-latest.sfx.exe" -ArgumentList @( '-y' )
         Remove-Item "msys2-x86_64-latest.sfx.exe"
     - name: "Initial launch"
-#      working-directory: "${env.GITHUB_WORKSPACE}\\msys64"
       shell: cmd
-      run: Call %MSYS2_CMD%
-#        echo "Here we are..."
-#        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','exit')
+      run: |
+        Cd %MSYS2_CMD%\..
+        msys2_shell.cmd
     - name: "Cache Pacman packages"
       uses: actions/cache@v3
       with:
