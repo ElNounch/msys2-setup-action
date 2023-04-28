@@ -50,8 +50,7 @@ runs:
     - name: "Initial launch"
 #      working-directory: "${env.GITHUB_WORKSPACE}\\msys64"
       shell: cmd
-      run: |
-        %MSYS2_CMD%
+      run: Call %MSYS2_CMD%
 #        echo "Here we are..."
 #        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','exit')
     - name: "Cache Pacman packages"
