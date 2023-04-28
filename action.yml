@@ -49,10 +49,9 @@ runs:
         Remove-Item "msys2-x86_64-latest.sfx.exe"
     - name: "Initial launch"
 #      working-directory: "${env.GITHUB_WORKSPACE}\\msys64"
-      shell: "msys2.cmd -f {0}"
-      run: |
-        echo "Here we are..."
-        sleep 5
+      shell: "msys2.cmd"
+#      run: |
+#        echo "Here we are..."
 #        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','exit')
     - name: "Cache Pacman packages"
       uses: actions/cache@v3
@@ -64,13 +63,14 @@ runs:
     - name: "Update package database and core packages"
       shell: "msys2.cmd -f {0}"
       run: |
+        while ! systemctl show pacman-init.service | grep SubState=exited; do
+          sleep 1
+        done
         pacman -Syuu --noconfirm
-        sleep 5
     - name: "Update core packages"
       shell: "msys2.cmd -f {0}"
       run: |
         pacman -Su --noconfirm
-        sleep 5
     - name: "Install additionnal packages"
       shell: "msys2.cmd -f {0}"
       run: |
