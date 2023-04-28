@@ -49,8 +49,9 @@ runs:
         Remove-Item "msys2-x86_64-latest.sfx.exe"
     - name: "Initial launch"
 #      working-directory: "${env.GITHUB_WORKSPACE}\\msys64"
-      shell: "msys2.cmd"
+      shell: cmd
       run: |
+        %MSYS2_CMD%
 #        echo "Here we are..."
 #        Start-Process -NoNewWindow -Wait -FilePath ${{ steps.locate.outputs.msys2_shell_cmd }} -ArgumentList $( ${{ steps.locate.outputs.msys2_shell_args }},'-c','exit')
     - name: "Cache Pacman packages"
